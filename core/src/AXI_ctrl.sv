@@ -1,9 +1,9 @@
 // AXI-lite Slave Controller 2020.03.11 Naoki F., AIT
 // (modified for TRNG IP Core on 2021.03.05)
-// ƒ‰ƒCƒZƒ“ƒXðŒ‚Í COPYING ƒtƒ@ƒCƒ‹‚ðŽQÆ‚µ‚Ä‚­‚¾‚³‚¢
+// ãƒ©ã‚¤ã‚»ãƒ³ã‚¹æ¡ä»¶ã¯ COPYING ãƒ•ã‚¡ã‚¤ãƒ«ã‚’å‚ç…§ã—ã¦ãã ã•ã„
 
 module AXI_ctrl (
-    // AXI Lite ŠÖ˜AM†
+    // AXI Lite é–¢é€£ä¿¡å·
     input  logic         AXI_CTRL_ACLK,
     input  logic         AXI_CTRL_ARESETN,
     input  logic [ 3: 0] AXI_CTRL_AWADDR,
@@ -26,7 +26,7 @@ module AXI_ctrl (
     output logic         AXI_CTRL_RVALID,
     input  logic         AXI_CTRL_RREADY,
 
-    // ƒ†[ƒUM†
+    // ãƒ¦ãƒ¼ã‚¶ä¿¡å·
     output logic         RNG_GO, RNG_STOP,  // 0x00 W
     input  logic         RNG_RUN, RNG_OVER, // 0x00 R
     output logic [31: 0] RNG_SEND_BYTES,    // 0x04 W
@@ -36,22 +36,22 @@ module AXI_ctrl (
     output logic [31: 0] RNG_PARAMETER,     // 0x0C W
     input  logic [31: 0] RNG_STATS);        // 0x0c R
 
-    // AXIƒŒƒXƒ|ƒ“ƒXií‚ÉuOKvj
+    // AXIãƒ¬ã‚¹ãƒãƒ³ã‚¹ï¼ˆå¸¸ã«ã€ŒOKã€ï¼‰
     assign AXI_CTRL_BRESP = 2'b00;
     assign AXI_CTRL_RRESP = 2'b00;
 
-    // AXI‘‚«ž‚Ýƒ|[ƒgiAW, Wj
-    // -- 1. AWVALID, WVALID ‚ªƒAƒT[ƒg‚³‚ê‚é‚Ü‚Å‘Ò‚Â
-    // -- 2. AWADDR ‚ð‹L‰¯‚µCAWREADY, WREADY, BVALID ‚ðƒAƒT[ƒg
-    // -- 3. ‘‚«ž‚Ý‚ðs‚¢CAWREADY, WREADY ‚ðƒlƒQ[ƒg
-    // -- 4. BREADY ‚ªƒAƒT[ƒg‚³‚ê‚½‚ç BVALID ‚ðƒlƒQ[ƒg
+    // AXIæ›¸ãè¾¼ã¿ãƒãƒ¼ãƒˆï¼ˆAW, Wï¼‰
+    // -- 1. AWVALID, WVALID ãŒã‚¢ã‚µãƒ¼ãƒˆã•ã‚Œã‚‹ã¾ã§å¾…ã¤
+    // -- 2. AWADDR ã‚’è¨˜æ†¶ã—ï¼ŒAWREADY, WREADY, BVALID ã‚’ã‚¢ã‚µãƒ¼ãƒˆ
+    // -- 3. æ›¸ãè¾¼ã¿ã‚’è¡Œã„ï¼ŒAWREADY, WREADY ã‚’ãƒã‚²ãƒ¼ãƒˆ
+    // -- 4. BREADY ãŒã‚¢ã‚µãƒ¼ãƒˆã•ã‚ŒãŸã‚‰ BVALID ã‚’ãƒã‚²ãƒ¼ãƒˆ
     logic [ 1: 0] d_awaddr;
     logic         n_wready, n_bvalid;
     logic         reg_we;
 
     assign AXI_CTRL_AWREADY = AXI_CTRL_WREADY;
 
-    // -- ‘‚«ž‚Ý§Œä
+    // -- æ›¸ãè¾¼ã¿åˆ¶å¾¡
     always_comb begin
         n_wready = AXI_CTRL_WREADY;
         n_bvalid = AXI_CTRL_BVALID;
@@ -84,7 +84,7 @@ module AXI_ctrl (
         end
     end
 
-    // -- ‘‚«ž‚Ýƒf[ƒ^
+    // -- æ›¸ãè¾¼ã¿ãƒ‡ãƒ¼ã‚¿
     always_ff @ (posedge AXI_CTRL_ACLK) begin
         if (~ AXI_CTRL_ARESETN) begin
             RNG_GO         <= 1'b0;
@@ -118,17 +118,17 @@ module AXI_ctrl (
         end
     end
     
-    // AXI“Ç‚Ýo‚µƒ|[ƒgiAR, Rj
-    // -- 1. ARVALID ‚ªƒAƒT[ƒg‚³‚ê‚é‚Ü‚Å‘Ò‚Â
-    // -- 2. ARADDR ‚ð‹L‰¯‚µCARREADY ‚ðƒAƒT[ƒg
-    // -- 3. “Ç‚Ýo‚µ‚ðs‚¢CRVALID ‚ðƒAƒT[ƒg‚µCARREADY ‚ðƒlƒQ[ƒg
-    // -- 4. RREADY ‚ªƒAƒT[ƒg‚³‚ê‚½‚ç RVALID ‚ðƒlƒQ[ƒg
+    // AXIèª­ã¿å‡ºã—ãƒãƒ¼ãƒˆï¼ˆAR, Rï¼‰
+    // -- 1. ARVALID ãŒã‚¢ã‚µãƒ¼ãƒˆã•ã‚Œã‚‹ã¾ã§å¾…ã¤
+    // -- 2. ARADDR ã‚’è¨˜æ†¶ã—ï¼ŒARREADY ã‚’ã‚¢ã‚µãƒ¼ãƒˆ
+    // -- 3. èª­ã¿å‡ºã—ã‚’è¡Œã„ï¼ŒRVALID ã‚’ã‚¢ã‚µãƒ¼ãƒˆã—ï¼ŒARREADY ã‚’ãƒã‚²ãƒ¼ãƒˆ
+    // -- 4. RREADY ãŒã‚¢ã‚µãƒ¼ãƒˆã•ã‚ŒãŸã‚‰ RVALID ã‚’ãƒã‚²ãƒ¼ãƒˆ
     logic [31: 0] d_araddr;
     logic         n_arready, n_rvalid;
     logic [31: 0] n_rdata;
     logic         reg_re;
 
-    // -- “Ç‚Ýo‚µ§Œä    
+    // -- èª­ã¿å‡ºã—åˆ¶å¾¡    
     always_comb begin
         n_arready = AXI_CTRL_ARREADY;
         n_rvalid  = AXI_CTRL_RVALID;
@@ -162,7 +162,7 @@ module AXI_ctrl (
         end
     end
 
-    // -- “Ç‚Ýo‚µƒf[ƒ^
+    // -- èª­ã¿å‡ºã—ãƒ‡ãƒ¼ã‚¿
     always_comb begin
         if (d_araddr == 2'd0) begin
             n_rdata = {30'b0, RNG_OVER, RNG_RUN};

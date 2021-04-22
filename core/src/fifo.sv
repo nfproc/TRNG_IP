@@ -1,5 +1,5 @@
 // FIFO module 2020.03.12 Naoki F. AIT
-// ƒ‰ƒCƒZƒ“ƒXğŒ‚Í COPYING ƒtƒ@ƒCƒ‹‚ğQÆ‚µ‚Ä‚­‚¾‚³‚¢
+// ãƒ©ã‚¤ã‚»ãƒ³ã‚¹æ¡ä»¶ã¯ COPYING ãƒ•ã‚¡ã‚¤ãƒ«ã‚’å‚ç…§ã—ã¦ãã ã•ã„
 
 module fifo #(
     parameter WIDTH = 8,
@@ -22,7 +22,7 @@ module fifo #(
     logic                n_empty, near_empty, n_near_empty;
     logic                n_full , near_full , n_near_full;
 
-    // RAM: “¯ˆêƒAƒhƒŒƒX‚Ö‚Ì“Ç‚İ‘‚«in_head == tailj‚Å‚Í“Á•Ê‚Èˆ—‚ª•K—v
+    // RAM: åŒä¸€ã‚¢ãƒ‰ãƒ¬ã‚¹ã¸ã®èª­ã¿æ›¸ãï¼ˆn_head == tailï¼‰ã§ã¯ç‰¹åˆ¥ãªå‡¦ç†ãŒå¿…è¦
     assign DATA_R     = (ram_select) ? ram_out : d_data_w;
     
     always_ff @ (posedge CLK) begin
@@ -34,14 +34,14 @@ module fifo #(
         end
     end
 
-    always_ff @ (posedge CLK) begin // ‚±‚ê‚ª RAM –{‘Ì
+    always_ff @ (posedge CLK) begin // ã“ã‚ŒãŒ RAM æœ¬ä½“
         ram_out <= fifo_ram[n_head];
         if (write_valid) begin
             fifo_ram[tail] <= DATA_W;
         end
     end
 
-    // ƒŠ[ƒhEƒ‰ƒCƒg‚Ì§Œäi‘g‡‚¹‰ñ˜Hj
+    // ãƒªãƒ¼ãƒ‰ãƒ»ãƒ©ã‚¤ãƒˆã®åˆ¶å¾¡ï¼ˆçµ„åˆã›å›è·¯ï¼‰
     assign read_valid   = RE & ~EMPTY;
     assign write_valid  = WE & ~FULL;
     assign n_head       = (read_valid)  ? head + 1'b1 : head;
@@ -51,7 +51,7 @@ module fifo #(
     assign n_near_empty = (n_head + 1'b1 == n_tail);
     assign n_near_full  = (n_head == n_tail + 1'b1);
 
-    // ’l‚ÌXViƒtƒŠƒbƒvƒtƒƒbƒvj
+    // å€¤ã®æ›´æ–°ï¼ˆãƒ•ãƒªãƒƒãƒ—ãƒ•ãƒ­ãƒƒãƒ—ï¼‰
     always_ff @ (posedge CLK) begin
         if (RST) begin
             head       <= 0;
