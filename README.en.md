@@ -22,10 +22,9 @@ The core is designed so that random bitstrings can be collected on the PYNQ
 platform (v2.6). The author synthesized a PYNQ overlay with the core using
 Vivado 2020.1, targetting the PYNQ-Z1 board.
 
-More information about developing an overlay and collecting bitstrings will
-be found in an article of the ACRi blog (in Japanese), which is planned to
-be published in May 10, 2021.
-The URL of the article will be added after publication.
+More information about developing an overlay and collecting bitstrings is
+found in <a href="https://www.acri.c.titech.ac.jp/wordpress/archives/11585">
+an article of the ACRi blog</a> (in Japanese).
 
 Copyright
 ---------
